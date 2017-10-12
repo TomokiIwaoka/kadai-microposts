@@ -25,6 +25,8 @@ class AuthController extends Controller
     
     // 追加 redirectPath()でのリダイレクト先指定
     protected $redirectTo = '/';
+    //追加 loginpath() in AuthenticatesUsers.phpのリダイレクト先指定
+    protected $loginPath = '/login';
 
     /**
      * Create a new authentication controller instance.
