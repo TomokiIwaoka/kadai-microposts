@@ -20,7 +20,8 @@
                 <li role="presentation" class="{{ Request::is('users/*/followers') ? 'active' : '' }}"><a href="{{ route('users.followers', ['id' => $user->id]) }}">Followers <span class="badge">{{ $count_followers }}</span></a></li>
                 <li role="presentation" class="{{ Request::is('users/*/likes') ? 'active' : '' }}"><a href="{{ route('micropost.likes', ['id' => $user->id]) }}">Likes <span class="badge">{{ $count_likes }}</span></a></li>
             </ul>
-            @include('users.users', ['users' => $users])
+            <!--likeしているMicropost一覧表示のため、micropostsをインクルード-->
+            @include('microposts.microposts', ['microposts' => $microposts])
         </div>
     </div>
 @endsection

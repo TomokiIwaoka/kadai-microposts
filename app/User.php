@@ -55,7 +55,7 @@ class User extends Model implements AuthenticatableContract,
     
     
     /* Follow and unfollow function */
-        public function follow($userId)
+    public function follow($userId)
     {
         // 既にフォローしているかの確認
         $exist = $this->is_following($userId);
@@ -100,5 +100,56 @@ class User extends Model implements AuthenticatableContract,
         $follow_user_ids = $this->followings()->lists('users.id')->toArray();
         $follow_user_ids[] = $this->id;
         return Micropost::whereIn('user_id', $follow_user_ids);
+    }
+    
+    /* Get microposts that the user likes*/
+    public function likes()
+    {
+        return $this->belongsToMany(Micropost::class, 'favorites', 'user_id', 'micropost_id')->withTimestamps();
+    }
+    
+    /* Like the micropost 
+     *自分のMicropostのLikeは可能(FacebookとかLineとかもできるので)
+     * @param likeしようとしているmicropostのID
+     */
+    public function like($micropostId)
+    {
+        // 既にLikeしているかの確認
+        $exist = $this->already_liked($micropostId);
+        
+        if ($exist) {
+            // 既にLikeしていれば何もしない
+            return false;
+        } else {
+            // 未LikeであればLikeする
+            $this->likes()->attach($micropostId);
+            return true;
+        }
+    }
+    
+    /* Unlike the micropost 
+     * 自分のMicropostのunlikeも出来る
+     * @param unlikeしようとしているmicropostのID
+     */
+    public function unlike($micropostId)
+    {
+        // 既にLikeしているかの確認
+        $exist = $this->already_liked($micropostId);
+          
+        if ($exist) {
+            // 既にLikeしていればフォローを外す
+            $this->likes()->detach($micropostId);
+            return true;
+        } else {
+            // 未Likeであれば何もしない
+            return false;
+        }
+    }
+    
+    /* 当該ユーザーが特定Miropostについて既にLikeしているか確認 
+     * @param like or unlikeを確認しようとしているmicropostのID
+     */
+    public function already_liked($micropostId) {
+        return $this->likes()->where('micropost_id', $micropostId)->exists();
     }
 }

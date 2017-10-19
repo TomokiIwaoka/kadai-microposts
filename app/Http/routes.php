@@ -30,6 +30,13 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('unfollow', 'UserFollowController@destroy')->name('user.unfollow');
         Route::get('followings', 'UsersController@followings')->name('users.followings');
         Route::get('followers', 'UsersController@followers')->name('users.followers');
+        
+        //Micropostのお気に入り登録、お気に入り解除目的
+        Route::post('like', 'FavoritesController@store')->name('micropost.like');
+        Route::delete('unlike', 'FavoritesController@destroy')->name('micropost.unlike');
+        
+        //LikeしているMicropostの一覧取得のためのアクションを呼び出す
+        Route::get('likes', 'FavoritesController@likes')->name('micropost.likes');
     });
     
     Route::resource('microposts', 'MicropostsController', ['only' => ['store', 'destroy']]);

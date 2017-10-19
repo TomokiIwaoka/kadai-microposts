@@ -12,4 +12,10 @@ class Micropost extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
+    /* Get users who like this micropost*/
+    public function likedby()
+    {
+        return $this->belongsToMany(User::class, 'favorites', 'micropost_id', 'user_id')->withTimestamps();
+    }
 }
